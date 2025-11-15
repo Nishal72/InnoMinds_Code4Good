@@ -99,20 +99,27 @@ def extract_payslip_data(text):
         'designation': ''
     }
     
-    # Pattern for salary (various formats)
+    # Clean the text - remove extra spaces and normalize
+    text = ' '.join(text.split())
+    
+    # Pattern for salary (various formats) - improved to capture larger numbers
     salary_patterns = [
-        r'(?:gross|basic|net|salary|pay|total)[:\s]*(?:MUR|Rs\.?|₨)?\s*([\d,]+\.?\d*)',
-        r'(?:MUR|Rs\.?|₨)\s*([\d,]+\.?\d*)',
-        r'total[:\s]*([\d,]+\.?\d*)',
+        r'(?:gross\s*pay|basic\s*salary|net\s*pay|monthly\s*salary|salary|total\s*pay)[:\s]*(?:MUR|Rs\.?|₨)?\s*([\d,]+(?:\.\d{1,2})?)',
+        r'(?:MUR|Rs\.?|₨)\s*([\d,]{4,}(?:\.\d{1,2})?)',  # At least 4 digits
+        r'(?:pay|salary)[:\s]*([\d,]{4,}(?:\.\d{1,2})?)',
+        r'\b([\d,]{5,}(?:\.\d{1,2})?)\s*(?:MUR|Rs\.?|₨|rupees)',  # 5+ digits followed by currency
     ]
     
     for pattern in salary_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
-            salary_str = match.group(1).replace(',', '')
+            salary_str = match.group(1).replace(',', '').replace(' ', '')
             try:
-                data['monthly_salary'] = Decimal(salary_str)
-                break
+                salary_value = Decimal(salary_str)
+                # Only accept reasonable salary values (between 5,000 and 500,000 MUR)
+                if 5000 <= salary_value <= 500000:
+                    data['monthly_salary'] = salary_value
+                    break
             except:
                 pass
     

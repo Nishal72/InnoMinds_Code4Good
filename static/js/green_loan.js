@@ -52,14 +52,45 @@ async function extractTextFromImage(file) {
 
 // Analyze button click
 document.getElementById('analyzeBtn').addEventListener('click', async function() {
+    // Show loading immediately
+    document.getElementById('loadingIndicator').style.display = 'block';
+    this.disabled = true;
+    
+    // If extraction is still in progress, wait for it
     if (!extractedText) {
-        alert('Please wait for text extraction to complete');
+        let attempts = 0;
+        const maxAttempts = 10; // Wait up to 5 seconds
+        
+        const checkInterval = setInterval(async () => {
+            attempts++;
+            
+            if (extractedText) {
+                clearInterval(checkInterval);
+                await analyzePayslip.call(this);
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                document.getElementById('loadingIndicator').style.display = 'none';
+                this.disabled = false;
+                // Still extracting - continue waiting silently
+                this.textContent = 'Still extracting... Please wait';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-chart-line"></i> Analyze Payslip';
+                    this.disabled = false;
+                }, 2000);
+            }
+        }, 500);
         return;
     }
 
+    await analyzePayslip.call(this);
+});
+
+async function analyzePayslip() {
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    
     // Show loading
     document.getElementById('loadingIndicator').style.display = 'block';
-    this.disabled = true;
+    analyzeBtn.disabled = true;
 
     try {
         const formData = new FormData();
@@ -76,16 +107,16 @@ document.getElementById('analyzeBtn').addEventListener('click', async function()
         if (data.success) {
             displayAnalysis(data.analysis, data.extracted_data);
         } else {
-            alert('Analysis failed: ' + data.error);
+            alert('Analysis failed: ' + (data.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error analyzing payslip:', error);
         alert('Failed to analyze payslip. Please try again.');
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
-        this.disabled = false;
+        analyzeBtn.disabled = false;
     }
-});
+}
 
 // Display analysis results
 function displayAnalysis(analysis, extractedData) {
