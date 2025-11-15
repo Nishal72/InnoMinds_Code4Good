@@ -23,4 +23,6 @@ urlpatterns = [
     path('', include('core.urls')),
     path('accounts/', include('accounts.urls')),
     path('green_loan/', include('green_loan.urls')),
+    path('waste_exchange/', include('waste_exchange.urls')),
+
 ]

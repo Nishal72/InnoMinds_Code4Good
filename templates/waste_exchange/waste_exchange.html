@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Waste Exchange{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+
+    <h2 class="text-success fw-bold mb-3">
+        <img src="{% static 'images/recycle.png' %}" height="35">
+        Waste Exchange
+    </h2>
+
+    <div id="map" style="width:100%; height:80vh; border-radius:12px; overflow:hidden;"></div>
+
+</div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="businessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="businessName"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <center>
+                    <img id="businessImage"
+                         src=""
+                         style="width:250px; border:4px solid #0b7832; border-radius:12px;">
+                </center>
+
+                <hr>
+
+                <h6 class="fw-bold">Waste By-products:</h6>
+                <p id="businessWaste"></p>
+
+                <hr>
+
+                <h6 class="fw-bold">Contact</h6>
+                <p><strong>Phone:</strong> <span id="businessPhone"></span></p>
+                <p><strong>Email:</strong> <span id="businessEmail"></span></p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success">Request Quotation</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Marker Icon Generator -->
+<script src="{% static 'js/marker_icon.js' %}"></script>
+
+<!-- Waste Exchange Map Logic -->
+<script src="{% static 'js/waste_exchange.js' %}"></script>
+
+<script>
+    const businesses = JSON.parse('{{ businesses_json|escapejs }}');
+</script>
+
+<!-- Google Maps (with callback) -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap" async defer></script>
+
+{% endblock %}
