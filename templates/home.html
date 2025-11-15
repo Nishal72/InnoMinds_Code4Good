@@ -1,12 +1,125 @@
 {% extends "base.html" %}
-{% block title %}Welcome - MauLernzi{% endblock %}
+{% load static %}
+{% block title %}Welcome — MoLenerzi{% endblock %}
 
 {% block content %}
-<div class="p-5 text-center bg-light rounded">
-    <h1>MauLernzi</h1>
-    <p class="lead mt-2">
-        Learn anything. Anywhere. Anytime.
+
+<div class="p-5 text-center bg-light rounded shadow-sm">
+
+    <h1 class="fw-bold text-success">MoLenerzi</h1>
+
+    <p class="lead mt-3">
+        AI powered sustainability platform helping SMEs reduce emissions, optimize energy,
+        trade waste, and stay connected even offline.
     </p>
-    <a class="btn btn-primary mt-3" href="/courses/">Browse Courses</a>
+
+    <p class="mt-3 text-muted">
+        Accelerating Climate Action (SDG 13) through accessible technology for small businesses.
+    </p>
+
+    <!-- Key Action Buttons -->
+    <div class="mt-4">
+
+        <a href="{% url 'waste_exchange' %}" class="btn btn-success btn-lg me-2">
+            ♻ Waste Exchange
+        </a>
+
+        <a href="{% url 'offline_vat_form' %}" class="btn btn-outline-success btn-lg me-2">
+            📩 Offline VAT Return
+        </a>
+
+        <a href="/green_audit/" class="btn btn-outline-primary btn-lg me-2">
+            📊 Carbon & Energy Audit
+        </a>
+
+        <a href="/green_loan/" class="btn btn-primary btn-lg">
+            💰 Green Loan Eligibility
+        </a>
+
+    </div>
+
 </div>
+
+<!-- Features Section -->
+<div class="container mt-5">
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+            <div class="p-4 shadow-sm rounded bg-white h-100">
+                <h4 class="text-success">AI Sustainability Assistant</h4>
+                <p class="text-muted">
+                    Get real time guidance on carbon reduction, energy savings,
+                    eco friendly practices, and climate awareness in multiple languages.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="p-4 shadow-sm rounded bg-white h-100">
+                <h4 class="text-success">Circular Economy Hub</h4>
+                <p class="text-muted">
+                    Trade recyclable and reusable waste with nearby SMEs,
+                    reducing landfill impact and creating new financial opportunities.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="p-4 shadow-sm rounded bg-white h-100">
+                <h4 class="text-success">Offline Ready Tools</h4>
+                <p class="text-muted">
+                    Submit VAT returns through encrypted SMS and access sustainability tools
+                    even during outages or in low connectivity zones.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- IMPACT SECTION -->
+<div class="container mt-5">
+    <div class="row align-items-center">
+
+        <div class="col-md-6">
+            <h2 class="fw-bold text-success">Why MoLenerzi Matters</h2>
+
+            <p class="text-muted">
+                Many SMEs lack access to affordable sustainability tools and often contribute to environmental impact
+                without realizing it. MoLenerzi empowers every business to take measurable climate action.
+            </p>
+
+            <ul class="text-muted">
+                <li>Reduce energy costs through smart optimization</li>
+                <li>Turn waste into revenue streams through trading</li>
+                <li>Improve resilience in disaster situations</li>
+                <li>Unlock access to green financing programs</li>
+            </ul>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <img src="static\images\MoLenerzi.png"
+                 class="img-fluid rounded shadow-sm"
+                 style="max-height: 500px;">
+        </div>
+
+    </div>
+</div>
+
+
+<!-- CALL TO ACTION -->
+<div class="text-center mt-5 mb-5">
+    <h2 class="fw-bold text-success">Start Your Sustainability Journey</h2>
+
+    <p class="text-muted">
+        Join SMEs across Mauritius adopting practical climate friendly practices
+        powered by artificial intelligence.
+    </p>
+
+    <a href="/accounts/register" class="btn btn-success btn-lg px-5">
+        Register Your Business
+    </a>
+</div>
+
 {% endblock %}
