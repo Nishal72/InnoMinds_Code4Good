@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  django:
+    build: .
+    container_name: molenerzi_app
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "8100:8000"   # Django runs on :8000 inside container, exposed to host on :8100
+    command: gunicorn MoLenerzi.wsgi:application --bind 0.0.0.0:8000
+
+volumes:
+  static_volume:
+  media_volume:
