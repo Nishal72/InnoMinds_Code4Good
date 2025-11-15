@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'core',
     'green_loan',
     'green_audit',
+    'waste_exchange',
 ]
 
 MIDDLEWARE = [
