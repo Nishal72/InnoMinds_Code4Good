@@ -33,6 +33,10 @@ ALLOWED_HOSTS = []
 load_dotenv()
 
 GOOGLE_MAPS_KEY = os.getenv("GOOGLE_MAPS_KEY")
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER")
+
 
 # Application definition
 
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
     'green_loan',
     'green_audit',
     'waste_exchange',
+    'offline_vat_return',
 ]
 
 MIDDLEWARE = [

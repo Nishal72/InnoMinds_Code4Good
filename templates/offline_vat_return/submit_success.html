@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}VAT Submitted{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="text-success fw-bold">VAT Return Submitted</h3>
+            <p>Your VAT return has been encrypted and stored.</p>
+
+            {% if sms_sent %}
+                <div class="alert alert-success">
+                    Encrypted SMS sent successfully to <strong>{{ phone_number }}</strong>.
+                    {% if sms_sid %}
+                        <br>Message SID: <code>{{ sms_sid }}</code>
+                    {% endif %}
+                </div>
+            {% elif sms_error %}
+                <div class="alert alert-warning">
+                    VAT return saved, but SMS could not be sent:<br>
+                    <small>{{ sms_error }}</small>
+                </div>
+            {% endif %}
+
+            <hr>
+
+            <h5>Encrypted Payload (Base64)</h5>
+            <p class="small text-muted">
+                This is the encrypted string which can be sent or pasted into the decryption tool.
+            </p>
+
+            <pre class="bg-light p-3 rounded small">{{ encrypted }}</pre>
+
+            <a href="{% url 'offline_vat_form' %}" class="btn btn-outline-success me-2">Submit Another</a>
+            <a href="{% url 'offline_vat_decrypt' %}" class="btn btn-primary">Go to Decryption Tool</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

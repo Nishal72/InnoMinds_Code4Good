@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Decrypt VAT Data{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="text-success fw-bold mb-3">Decryption Tool</h3>
+            <p class="text-muted">
+                Paste the encrypted Base64 text below to decrypt it using the shared AES key/IV.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Encrypted Data (Base64)</label>
+                    <textarea name="ciphertext" rows="4" class="form-control" required>{{ request.POST.ciphertext }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success">Decrypt</button>
+            </form>
+
+            {% if output %}
+                <hr>
+                <h5>Decrypted Result</h5>
+                <pre class="bg-light p-3 rounded small">{{ output }}</pre>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -27,6 +27,8 @@ urlpatterns = [
     path('green_loan/', include('green_loan.urls')),
     path('green_audit/', include('green_audit.urls')),
     path('waste_exchange/', include('waste_exchange.urls')),
+    path("offline-vat/", include("offline_vat_return.urls")),
+
 ]
 
 if settings.DEBUG:
