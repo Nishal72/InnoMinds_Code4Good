@@ -1,1 +1,688 @@
-Hello
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Loan Advisor - MoLenerzi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --secondary-green: #059669;
+            --dark-green: #047857;
+            --light-green: #d1fae5;
+            --accent-teal: #14b8a6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header h1 {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card h5 {
+            color: var(--dark-green);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card p {
+            color: #6b7280;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+            width: 100%;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-gradient:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .analysis-result {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .analysis-result.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loan-status {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .loan-status.approved {
+            background: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        .loan-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--light-green), white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .metric-card h6 {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            color: var(--dark-green);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .bank-card {
+            background: white;
+            border: 2px solid var(--light-green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .bank-card:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .bank-card .bank-name {
+            color: var(--dark-green);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bank-card .bank-rate {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tips-section h5 {
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .tips-section ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .tips-section li {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tracker-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .tracker-card h6 {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .tracker-card .value {
+            color: var(--dark-green);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .detailed-analysis {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .detailed-analysis h5 {
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .detailed-analysis p {
+            color: #374151;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <i class="fas fa-leaf"></i>
+                Green Loan Advisor
+            </h1>
+            <p class="mb-0">Get instant loan recommendations for your eco-friendly projects</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Left Column: Information Cards -->
+            <div class="col-md-6">
+                <div class="info-card">
+                    <div class="icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h5>Welcome to Green Loan Advisor!</h5>
+                    <p>Green loans help fund eco-friendly projects, such as energy-efficient home improvements, renewable energy investments, and sustainable initiatives.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h5>Benefits of Green Loans</h5>
+                    <p>Green loans offer lower interest rates (4-8% annually) and longer repayment terms for eco-friendly projects, promoting sustainability while saving money.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h5>How to Apply for a Green Loan</h5>
+                    <p>Simply upload your payslip image below. Our AI will analyze your eligibility and recommend suitable green loan options from Mauritian banks.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h5>Tips for Getting Approved</h5>
+                    <p>Maintain a good credit score, provide accurate payslip details, and choose a project that meets the lender's criteria for green loans.</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Upload & Analysis -->
+            <div class="col-md-6">
+                <!-- Loan Tracker -->
+                {% if user.is_authenticated %}
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="tracker-card">
+                            <h6>Total Applications</h6>
+                            <div class="value">{{ total_applications }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="tracker-card">
+                            <h6>Approved Loans</h6>
+                            <div class="value">{{ approved_count }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <h4 class="mb-4" style="color: var(--dark-green);">
+                        <i class="fas fa-upload"></i> Upload Your Payslip
+                    </h4>
+                    
+                    <input type="file" id="payslipInput" accept="image/*" style="display: none;">
+                    
+                    <button class="btn-gradient mb-3" id="captureBtn">
+                        <i class="fas fa-camera"></i> Capture Payslip Image
+                    </button>
+
+                    <div id="imagePreview" style="display: none;">
+                        <img id="previewImg" class="image-preview" alt="Payslip Preview">
+                    </div>
+
+                    <button class="btn-gradient" id="analyzeBtn" style="display: none;">
+                        <i class="fas fa-chart-line"></i> Analyze Payslip
+                    </button>
+
+                    <div id="loadingIndicator" style="display: none; text-align: center; margin-top: 1rem;">
+                        <div class="spinner"></div>
+                        <p style="color: var(--primary-green); margin-top: 0.5rem;">Analyzing your payslip...</p>
+                    </div>
+                </div>
+
+                <!-- Analysis Result -->
+                <div id="analysisResult" class="analysis-result">
+                    <h4 style="color: var(--dark-green); margin-bottom: 1.5rem;">
+                        <i class="fas fa-file-alt"></i> Loan Analysis Report
+                    </h4>
+
+                    <div id="loanStatus"></div>
+
+                    <div class="row" id="metricsSection">
+                        <!-- Metrics will be inserted here -->
+                    </div>
+
+                    <div id="banksSection">
+                        <h5 style="color: var(--dark-green); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-university"></i> Recommended Banks
+                        </h5>
+                        <div id="banksList"></div>
+                    </div>
+
+                    <div id="documentationSection" class="tips-section">
+                        <h5><i class="fas fa-file-signature"></i> Required Documentation</h5>
+                        <ul id="docsList"></ul>
+                    </div>
+
+                    <div id="tipsSection" class="tips-section">
+                        <h5><i class="fas fa-star"></i> Approval Tips</h5>
+                        <ul id="tipsList"></ul>
+                    </div>
+
+                    <div id="ecoImpactSection" class="detailed-analysis">
+                        <h5><i class="fas fa-globe-americas"></i> Environmental Impact</h5>
+                        <p id="ecoImpactText"></p>
+                    </div>
+
+                    <div id="detailedAnalysisSection" class="detailed-analysis">
+                        <h5><i class="fas fa-info-circle"></i> Detailed Analysis</h5>
+                        <p id="detailedAnalysisText"></p>
+                    </div>
+                </div>
+
+                <!-- Recent Applications -->
+                {% if user.is_authenticated and recent_loans %}
+                <div class="upload-section mt-4">
+                    <h4 style="color: var(--dark-green); margin-bottom: 1.5rem;">
+                        <i class="fas fa-history"></i> Recent Applications
+                    </h4>
+                    {% for loan in recent_loans %}
+                    <div class="bank-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="bank-name">{{ loan.loan_type|default:"Green Loan" }}</div>
+                                <p style="color: #6b7280; margin: 0;">
+                                    <i class="fas fa-calendar"></i> {{ loan.created_at|date:"M d, Y" }}
+                                </p>
+                                {% if loan.monthly_salary %}
+                                <p style="color: #6b7280; margin: 0;">
+                                    <i class="fas fa-money-bill"></i> Salary: MUR {{ loan.monthly_salary }}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if loan.loan_available %}
+                                <span class="badge bg-success">Approved</span>
+                                {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if loan.max_loan_amount %}
+                        <div class="bank-rate mt-2">MUR {{ loan.max_loan_amount|floatformat:0 }}</div>
+                        <small style="color: #6b7280;">Max Loan Amount</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let uploadedImage = null;
+        let extractedText = '';
+
+        // Capture button click
+        document.getElementById('captureBtn').addEventListener('click', function() {
+            document.getElementById('payslipInput').click();
+        });
+
+        // Handle image selection
+        document.getElementById('payslipInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                uploadedImage = file;
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('analyzeBtn').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+
+                // Extract text immediately
+                extractTextFromImage(file);
+            }
+        });
+
+        // Extract text from image
+        async function extractTextFromImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('/green_loan/api/extract-payslip/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    extractedText = data.extracted_text;
+                    console.log('Extracted text:', extractedText);
+                } else {
+                    console.error('OCR extraction failed:', data.error);
+                }
+            } catch (error) {
+                console.error('Error extracting text:', error);
+            }
+        }
+
+        // Analyze button click
+        document.getElementById('analyzeBtn').addEventListener('click', async function() {
+            if (!extractedText) {
+                alert('Please wait for text extraction to complete');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingIndicator').style.display = 'block';
+            this.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('payslip_text', extractedText);
+                formData.append('image', uploadedImage);
+
+                const response = await fetch('/green_loan/api/analyze-payslip/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayAnalysis(data.analysis, data.extracted_data);
+                } else {
+                    alert('Analysis failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error analyzing payslip:', error);
+                alert('Failed to analyze payslip. Please try again.');
+            } finally {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                this.disabled = false;
+            }
+        });
+
+        // Display analysis results
+        function displayAnalysis(analysis, extractedData) {
+            const resultDiv = document.getElementById('analysisResult');
+            
+            // Loan status
+            const statusHtml = `
+                <div class="loan-status ${analysis.loan_available ? 'approved' : 'pending'}">
+                    <i class="fas fa-${analysis.loan_available ? 'check-circle' : 'clock'}"></i>
+                    ${analysis.loan_available ? 'Loan Approved!' : 'Under Review'}
+                </div>
+            `;
+            document.getElementById('loanStatus').innerHTML = statusHtml;
+
+            // Metrics
+            let metricsHtml = '';
+            
+            if (extractedData.monthly_salary) {
+                metricsHtml += `
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <h6>Monthly Salary</h6>
+                            <div class="value">MUR ${parseFloat(extractedData.monthly_salary).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (analysis.max_loan_amount) {
+                metricsHtml += `
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <h6>Max Loan Amount</h6>
+                            <div class="value">MUR ${parseFloat(analysis.max_loan_amount).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (analysis.interest_rate) {
+                metricsHtml += `
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <h6>Interest Rate</h6>
+                            <div class="value">${analysis.interest_rate}% p.a.</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (analysis.monthly_payment) {
+                metricsHtml += `
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <h6>Monthly Payment</h6>
+                            <div class="value">MUR ${parseFloat(analysis.monthly_payment).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (analysis.loan_term_years) {
+                metricsHtml += `
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <h6>Loan Term</h6>
+                            <div class="value">${analysis.loan_term_years} years</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('metricsSection').innerHTML = metricsHtml;
+
+            // Banks
+            if (analysis.recommended_banks && analysis.recommended_banks.length > 0) {
+                let banksHtml = '';
+                analysis.recommended_banks.forEach(bank => {
+                    banksHtml += `
+                        <div class="bank-card">
+                            <div class="bank-name">
+                                <i class="fas fa-university"></i> ${bank.name}
+                            </div>
+                            <div class="bank-rate">${bank.rate}</div>
+                            <p style="color: #6b7280; margin: 0.5rem 0;">
+                                <i class="fas fa-calendar-alt"></i> ${bank.terms}
+                            </p>
+                            <p style="color: var(--primary-green); margin: 0;">
+                                <i class="fas fa-star"></i> ${bank.special}
+                            </p>
+                        </div>
+                    `;
+                });
+                document.getElementById('banksList').innerHTML = banksHtml;
+                document.getElementById('banksSection').style.display = 'block';
+            } else {
+                document.getElementById('banksSection').style.display = 'none';
+            }
+
+            // Documentation
+            if (analysis.documentation && analysis.documentation.length > 0) {
+                let docsHtml = '';
+                analysis.documentation.forEach(doc => {
+                    docsHtml += `<li>${doc}</li>`;
+                });
+                document.getElementById('docsList').innerHTML = docsHtml;
+                document.getElementById('documentationSection').style.display = 'block';
+            } else {
+                document.getElementById('documentationSection').style.display = 'none';
+            }
+
+            // Tips
+            if (analysis.approval_tips && analysis.approval_tips.length > 0) {
+                let tipsHtml = '';
+                analysis.approval_tips.forEach(tip => {
+                    tipsHtml += `<li>${tip}</li>`;
+                });
+                document.getElementById('tipsList').innerHTML = tipsHtml;
+                document.getElementById('tipsSection').style.display = 'block';
+            } else {
+                document.getElementById('tipsSection').style.display = 'none';
+            }
+
+            // Eco Impact
+            if (analysis.eco_impact) {
+                document.getElementById('ecoImpactText').textContent = analysis.eco_impact;
+                document.getElementById('ecoImpactSection').style.display = 'block';
+            } else {
+                document.getElementById('ecoImpactSection').style.display = 'none';
+            }
+
+            // Detailed Analysis
+            if (analysis.detailed_analysis) {
+                document.getElementById('detailedAnalysisText').textContent = analysis.detailed_analysis;
+                document.getElementById('detailedAnalysisSection').style.display = 'block';
+            } else {
+                document.getElementById('detailedAnalysisSection').style.display = 'none';
+            }
+
+            // Show result
+            resultDiv.classList.add('show');
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
