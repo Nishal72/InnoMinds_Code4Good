@@ -7,16 +7,21 @@
 
 <div class="container mt-3">
 
-    <h2 class="text-success fw-bold mb-3">
-        <img src="{% static 'images/recycle.png' %}" height="35">
-        Waste Exchange
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-success fw-bold mb-0">
+            <img src="{% static 'images/recycle.png' %}" height="35">
+            Waste Exchange
+        </h2>
+        <a href="{% url 'register_business' %}" class="btn btn-success">
+            + Register Business
+        </a>
+    </div>
 
     <div id="map" style="width:100%; height:80vh; border-radius:12px; overflow:hidden;"></div>
 
 </div>
 
-<!-- Bootstrap Modal -->
+
 <div class="modal fade" id="businessModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
@@ -54,17 +59,12 @@
     </div>
 </div>
 
-<!-- Marker Icon Generator -->
+<!-- modal + scripts stay exactly as you already have them -->
 <script src="{% static 'js/marker_icon.js' %}"></script>
-
-<!-- Waste Exchange Map Logic -->
 <script src="{% static 'js/waste_exchange.js' %}"></script>
-
 <script>
     const businesses = JSON.parse('{{ businesses_json|escapejs }}');
 </script>
-
-<!-- Google Maps (with callback) -->
 <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap" async defer></script>
 
 {% endblock %}

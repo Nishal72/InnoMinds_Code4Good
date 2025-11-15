@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ business.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+    <a href="{% url 'waste_exchange' %}" class="btn btn-link">&larr; Back to map</a>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h2 class="text-success fw-bold">{{ business.name }}</h2>
+
+            <p class="text-muted mb-2">
+                <strong>Waste By-products:</strong><br>
+                {{ business.waste }}
+            </p>
+
+            <hr>
+
+            <h5>Contact Information</h5>
+            <p><strong>Phone:</strong> {{ business.phone }}</p>
+            <p><strong>Email:</strong> {{ business.email }}</p>
+
+        </div>
+    </div>
+
+    <h3 class="mt-4">Photos</h3>
+
+    {% if images %}
+    <div class="row">
+        {% for img in images %}
+            <div class="col-md-4 col-sm-6 mb-3">
+                <div class="card photo-card">
+                    <img src="{{ img.image.url }}"
+                         class="card-img-top business-thumb"
+                         onclick="openPhotoModal('{{ img.image.url }}')">
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-muted">No photos uploaded yet.</p>
+    {% endif %}
+
+</div>
+
+<!-- Full Image Modal -->
+<div class="modal fade" id="photoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content photo-modal-content">
+            <img id="photoModalImg" src="" class="photo-modal-img">
+        </div>
+    </div>
+</div>
+
+<script>
+function openPhotoModal(url) {
+    document.getElementById("photoModalImg").src = url;
+    const modal = new bootstrap.Modal(document.getElementById("photoModal"));
+    modal.show();
+}
+</script>
+
+{% endblock %}

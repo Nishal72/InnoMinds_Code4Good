@@ -1,0 +1,33 @@
+/* Business gallery page */
+.business-thumb {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s ease;
+}
+
+.business-thumb:hover {
+    opacity: 0.85;
+    transform: scale(1.03);
+}
+
+.photo-card {
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+/* Modal full image */
+.photo-modal-content {
+    background-color: #000 !important;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.photo-modal-img {
+    width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 6px;
+}

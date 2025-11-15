@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Register Business{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2 class="text-success fw-bold mb-3">
+        Register Business
+    </h2>
+
+    <div class="row">
+        <!-- Map -->
+        <div class="col-md-7 mb-3">
+            <p class="text-muted">
+                Click on the map to set your business location.
+            </p>
+            <div id="register-map"
+                 style="width:100%; height:60vh; border-radius:12px; overflow:hidden;"></div>
+        </div>
+
+        <!-- Form -->
+        <div class="col-md-5">
+            <form method="post" enctype="multipart/form-data" class="card p-3 shadow-sm">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.waste.label_tag }}
+                    {{ form.waste }}
+                </div>
+
+                <!-- Multiple Photo Upload -->
+                <div class="mb-3">
+                    <label for="id_images" class="form-label">Business Photos</label>
+                    <input type="file"
+                           name="images"
+                           id="id_images"
+                           class="form-control"
+                           multiple>
+                    <small class="text-muted">You can upload several photos.</small>
+                </div>
+
+                <div class="mb-3">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.latitude.label_tag }}
+                    {{ form.latitude }}
+                    <small class="text-muted d-block">
+                        Filled automatically by clicking on the map.
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    {{ form.longitude.label_tag }}
+                    {{ form.longitude }}
+                    <small class="text-muted d-block">
+                        Filled automatically by clicking on the map.
+                    </small>
+                </div>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Please correct the errors below.
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'waste_exchange' %}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        Save Business
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/register_business.js' %}"></script>
+<script>
+    const INITIAL_LAT = -20.348404;
+    const INITIAL_LNG = 57.552152;
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initRegisterMap" async defer></script>
+
+{% endblock %}

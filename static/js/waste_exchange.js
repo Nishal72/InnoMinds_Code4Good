@@ -20,8 +20,12 @@ function addMarker(business) {
     });
 
     marker.addListener("click", () => {
-        openModal(business);
-    });
+    // Go to Django detail page for this business
+    if (business.detail_url) {
+        window.location.href = business.detail_url;
+    }
+});
+
 }
 
 function openModal(business) {
