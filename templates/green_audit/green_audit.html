@@ -1,0 +1,839 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Green Audit - MoLenerzi{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .card-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card-info:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-info .icon {
+        font-size: 2rem;
+        margin-right: 15px;
+    }
+    
+    .audit-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .input-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+    
+    .audit-textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        resize: vertical;
+        transition: border-color 0.3s ease;
+    }
+    
+    .audit-textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    .btn-gradient:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .btn-capture {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    
+    .btn-capture:hover {
+        box-shadow: 0 8px 20px rgba(17, 153, 142, 0.6);
+    }
+    
+    .result-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .result-title {
+        color: #667eea;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+    }
+    
+    .result-content {
+        color: #333;
+        line-height: 1.8;
+        font-size: 16px;
+        white-space: pre-wrap;
+    }
+    
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .image-preview {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .file-input-wrapper input[type=file] {
+        position: absolute;
+        left: -9999px;
+    }
+    
+    .alert {
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .alert-error {
+        background-color: #fee;
+        color: #c33;
+        border: 1px solid #fcc;
+    }
+    
+    .alert-success {
+        background-color: #efe;
+        color: #3c3;
+        border: 1px solid #cfc;
+    }
+    
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .metric-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .audit-list {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    .audit-item {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        transition: transform 0.2s ease;
+    }
+    
+    .audit-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .audit-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .audit-date {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .audit-kwh {
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+    
+    .audit-amount {
+        font-size: 1.3rem;
+        color: #28a745;
+        font-weight: bold;
+        margin: 5px 0;
+    }
+    
+    .audit-info {
+        color: #666;
+        font-size: 0.85rem;
+        margin: 5px 0;
+    }
+    
+    .bill-data-section {
+        background: #f0f8ff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .bill-data-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .bill-data-label {
+        font-weight: 600;
+        color: #555;
+    }
+    
+    .bill-data-value {
+        color: #667eea;
+        font-weight: bold;
+    }
+    
+    .analysis-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid #667eea;
+    }
+    
+    .analysis-section h3 {
+        color: #667eea;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    
+    .analysis-section ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .analysis-section ul li {
+        padding: 8px 0 8px 30px;
+        position: relative;
+        line-height: 1.6;
+    }
+    
+    .analysis-section ul li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .analysis-section ol {
+        counter-reset: item;
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .analysis-section ol li {
+        counter-increment: item;
+        padding: 12px 0 12px 40px;
+        position: relative;
+        line-height: 1.6;
+    }
+    
+    .analysis-section ol li:before {
+        content: counter(item);
+        position: absolute;
+        left: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    
+    .highlight-box {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+        color: white;
+        border-left: 5px solid #f5576c !important;
+    }
+    
+    .highlight-box h3 {
+        color: white !important;
+    }
+    
+    .highlight-box ul li:before {
+        color: #fff !important;
+    }
+    
+    .action-plan {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        color: white;
+        border-left: 5px solid #00f2fe !important;
+    }
+    
+    .action-plan h3 {
+        color: white !important;
+    }
+    
+    .action-plan ol li {
+        color: white;
+    }
+    
+    .action-plan ol li:before {
+        background: white !important;
+        color: #4facfe !important;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chart-title {
+        color: #667eea;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .savings-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin: 10px 5px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .info-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 15px 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .info-card h4 {
+        color: white;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="audit-container">
+    <h1 class="text-center mb-5" style="color: #667eea; font-weight: bold;"> Green Audit</h1>
+    
+    <!-- Information Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card-info">
+                <div class="d-flex align-items-center">
+                    <div class="icon"></div>
+                    <div>
+                        <h5 class="mb-1">What is Green Audit?</h5>
+                        <p class="mb-0 small">Green audit is a process of assessing the environmental impact of an organization's activities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-info">
+                <div class="d-flex align-items-center">
+                    <div class="icon"></div>
+                    <div>
+                        <h5 class="mb-1">Benefits of Green Audit</h5>
+                        <p class="mb-0 small">Identify areas where energy and resources can be saved, leading to cost savings and environmental benefits.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-info">
+                <div class="d-flex align-items-center">
+                    <div class="icon"></div>
+                    <div>
+                        <h5 class="mb-1">How to Conduct</h5>
+                        <p class="mb-0 small">Evaluate energy consumption, waste management, water usage, and other environmental factors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Upload Section -->
+    <div class="input-section">
+        <h3 class="mb-4 text-center" style="color: #667eea;"> Upload Electricity Bill</h3>
+        <p class="text-center text-muted mb-4">Upload a photo of your Mauritius electricity bill for instant analysis</p>
+        
+        <div id="alertContainer"></div>
+        
+        <!-- Image Upload Button -->
+        <div class="file-input-wrapper">
+            <button class="btn-gradient btn-capture" onclick="document.getElementById('imageInput').click()">
+                <span id="uploadBtnText"> Select/Capture Electricity Bill</span>
+                <div id="uploadSpinner" class="spinner" style="display: none; margin: 0 auto;"></div>
+            </button>
+            <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+        </div>
+        
+        <p class="text-center mt-3 small text-muted">Supported formats: JPG, PNG, HEIC</p>
+    </div>
+    
+    <!-- Image Preview -->
+    <div id="imagePreviewContainer" style="display: none;">
+        <div class="input-section">
+            <h4 style="color: #667eea;"> Uploaded Bill</h4>
+            <img id="imagePreview" class="image-preview" alt="Electricity bill image">
+        </div>
+    </div>
+    
+    <!-- Results Section -->
+    <div id="resultsContainer"></div>
+    
+    <!-- Energy Tracker Section -->
+    <div id="energyTrackerContainer" style="display: none;">
+        <div class="input-section">
+            <h3 class="mb-4" style="color: #667eea;">⚡ Energy Tracker</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"></div>
+                        <div class="metric-value" id="kwh-value">0</div>
+                        <div class="metric-label">kWh Consumed</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"></div>
+                        <div class="metric-value" id="cost-value">MUR 0</div>
+                        <div class="metric-label">Total Cost</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"></div>
+                        <div class="metric-value" id="avg-value">0</div>
+                        <div class="metric-label">Avg Daily kWh</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Audit History Section -->
+    {% if recent_audits %}
+    <div class="input-section">
+        <h3 class="mb-4" style="color: #667eea;">📋 Recent Audits</h3>
+        <div class="audit-list">
+            {% for audit in recent_audits %}
+            <div class="audit-item">
+                <div class="audit-header">
+                    <span class="audit-date">{{ audit.created_at|date:"d M Y, H:i" }}</span>
+                    {% if audit.kwh_consumption %}
+                    <span class="audit-kwh">{{ audit.kwh_consumption }} kWh</span>
+                    {% endif %}
+                </div>
+                {% if audit.total_amount %}
+                <div class="audit-amount">MUR {{ audit.total_amount }}</div>
+                {% endif %}
+                {% if audit.bill_number %}
+                <div class="audit-info">Bill #{{ audit.bill_number }}</div>
+                {% endif %}
+                <button class="btn btn-sm btn-info" onclick="viewAuditDetails('{{ audit.id }}')">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    let currentImage = null;
+    
+    function showAlert(message, type = 'error') {
+        const alertContainer = document.getElementById('alertContainer');
+        const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+        alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+        setTimeout(() => {
+            alertContainer.innerHTML = '';
+        }, 5000);
+    }
+    
+    async function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        currentImage = file;
+        
+        // Show upload button spinner
+        const uploadBtnText = document.getElementById('uploadBtnText');
+        const uploadSpinner = document.getElementById('uploadSpinner');
+        uploadBtnText.style.display = 'none';
+        uploadSpinner.style.display = 'block';
+        
+        // Display image preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('imagePreviewContainer').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        
+        // Extract text and analyze
+        showAlert('Processing your electricity bill... This may take a minute.', 'success');
+        await extractAndAnalyzeBill(file);
+        
+        // Hide spinner
+        uploadBtnText.style.display = 'inline';
+        uploadSpinner.style.display = 'none';
+    }
+    
+    async function extractAndAnalyzeBill(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        try {
+            const response = await fetch('/green_audit/api/extract-text/', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            console.log('API Response:', data);
+            
+            if (data.success) {
+                showAlert('Bill analyzed successfully!', 'success');
+                
+                // Display bill data
+                if (data.bill_data) {
+                    console.log('Displaying bill data:', data.bill_data);
+                    displayBillData(data.bill_data);
+                }
+                
+                // Display analysis
+                if (data.analysis) {
+                    console.log('Displaying analysis');
+                    displayAnalysis(data.analysis);
+                }
+                
+                // Update energy tracker
+                if (data.bill_data) {
+                    updateEnergyTracker(data.bill_data);
+                }
+                
+                // Scroll to results
+                setTimeout(() => {
+                    document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            } else {
+                console.error('API Error:', data.message);
+                showAlert(data.message || 'Failed to process electricity bill.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showAlert('An error occurred while processing the bill. Please try again.');
+        }
+    }
+    
+    function displayBillData(billData) {
+        console.log('displayBillData called with:', billData);
+        
+        if (!billData || Object.keys(billData).length === 0) {
+            console.log('No bill data to display');
+            return;
+        }
+        
+        let html = '<div class="input-section bill-data-section">';
+        html += '<h4 style="color: #667eea; margin-bottom: 20px;">📄 Extracted Bill Information</h4>';
+        
+        if (billData.bill_number) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Bill Number:</span><span class="bill-data-value">${billData.bill_number}</span></div>`;
+        }
+        if (billData.account_number) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Account Number:</span><span class="bill-data-value">${billData.account_number}</span></div>`;
+        }
+        if (billData.billing_period) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Billing Period:</span><span class="bill-data-value">${billData.billing_period}</span></div>`;
+        }
+        if (billData.kwh_consumption) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Consumption:</span><span class="bill-data-value">${billData.kwh_consumption} kWh</span></div>`;
+        }
+        if (billData.total_amount) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Total Amount:</span><span class="bill-data-value">MUR ${billData.total_amount}</span></div>`;
+        }
+        if (billData.previous_reading) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Previous Reading:</span><span class="bill-data-value">${billData.previous_reading}</span></div>`;
+        }
+        if (billData.current_reading) {
+            html += `<div class="bill-data-row"><span class="bill-data-label">Current Reading:</span><span class="bill-data-value">${billData.current_reading}</span></div>`;
+        }
+        
+        html += '</div>';
+        
+        const resultsContainer = document.getElementById('resultsContainer');
+        console.log('Inserting bill data HTML');
+        resultsContainer.innerHTML = html + resultsContainer.innerHTML;
+    }
+    
+    function displayAnalysis(analysis) {
+        console.log('displayAnalysis called with:', analysis);
+        const resultsContainer = document.getElementById('resultsContainer');
+        
+        // Create enhanced analysis display
+        const analysisHtml = `
+            <div class="result-card">
+                <div class="result-title">🌱 Comprehensive Green Audit Report</div>
+                <div class="info-card">
+                    <h4>📊 Your Energy Overview</h4>
+                    <p>This detailed report analyzes your electricity consumption and provides personalized recommendations for reducing costs and environmental impact in Mauritius.</p>
+                </div>
+                <div class="result-content">${analysis}</div>
+            </div>
+        `;
+        console.log('Appending analysis HTML');
+        resultsContainer.innerHTML += analysisHtml;
+    }
+    
+    function updateEnergyTracker(billData) {
+        if (!billData.kwh_consumption) return;
+        
+        const kwh = parseFloat(billData.kwh_consumption);
+        const cost = parseFloat(billData.total_amount) || 0;
+        const avgDaily = (kwh / 30).toFixed(1);
+        
+        document.getElementById('kwh-value').textContent = kwh.toFixed(0);
+        document.getElementById('cost-value').textContent = 'MUR ' + cost.toFixed(2);
+        document.getElementById('avg-value').textContent = avgDaily;
+        
+        document.getElementById('energyTrackerContainer').style.display = 'block';
+        
+        // Create charts after a delay to ensure DOM is ready
+        setTimeout(() => {
+            createEnergyCharts(billData);
+        }, 500);
+    }
+    
+    function createEnergyCharts(billData) {
+        const kwh = parseFloat(billData.kwh_consumption) || 0;
+        const cost = parseFloat(billData.total_amount) || 0;
+        
+        // Add chart containers
+        const chartsHtml = `
+            <div class="input-section">
+                <h3 class="mb-4" style="color: #667eea;">📊 Energy Analytics</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <div class="chart-title">Monthly Consumption Breakdown</div>
+                            <canvas id="consumptionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <div class="chart-title">Cost vs Potential Savings</div>
+                            <canvas id="savingsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="chart-container">
+                            <div class="chart-title">Solar Energy Production Estimate</div>
+                            <canvas id="solarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('energyTrackerContainer').insertAdjacentHTML('afterend', chartsHtml);
+        
+        // Calculate estimates
+        const avgMauritiusHousehold = 300; // kWh per month
+        const potentialSavings = cost * 0.25; // 25% savings potential
+        const solarProduction = kwh * 1.2; // Solar could produce 120% of consumption
+        
+        // Consumption Chart
+        new Chart(document.getElementById('consumptionChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Your Consumption', 'Average Household', 'Efficient Household'],
+                datasets: [{
+                    data: [kwh, avgMauritiusHousehold, avgMauritiusHousehold * 0.7],
+                    backgroundColor: ['#667eea', '#f5576c', '#38ef7d']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: false }
+                }
+            }
+        });
+        
+        // Savings Chart
+        new Chart(document.getElementById('savingsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Current Cost', 'After Efficiency', 'With Solar'],
+                datasets: [{
+                    label: 'MUR per Month',
+                    data: [cost, cost * 0.75, cost * 0.3],
+                    backgroundColor: ['#f5576c', '#ffd700', '#38ef7d']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+        
+        // Solar Production Chart
+        new Chart(document.getElementById('solarChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'Your Consumption (kWh)',
+                        data: Array(12).fill(kwh),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Solar Production Potential (kWh)',
+                        data: [
+                            solarProduction * 0.9,
+                            solarProduction * 0.95,
+                            solarProduction * 1.0,
+                            solarProduction * 1.05,
+                            solarProduction * 1.0,
+                            solarProduction * 0.95,
+                            solarProduction * 0.9,
+                            solarProduction * 0.95,
+                            solarProduction * 1.0,
+                            solarProduction * 1.1,
+                            solarProduction * 1.05,
+                            solarProduction * 1.0
+                        ],
+                        borderColor: '#38ef7d',
+                        backgroundColor: 'rgba(56, 239, 125, 0.1)',
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+    
+    function viewAuditDetails(auditId) {
+        // You can implement a modal or redirect to detailed view
+        alert('Audit details view - ID: ' + auditId);
+    }
+</script>
+{% endblock %}
