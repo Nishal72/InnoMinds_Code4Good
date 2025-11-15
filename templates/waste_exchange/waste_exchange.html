@@ -17,6 +17,19 @@
         </a>
     </div>
 
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Filter by Category</label>
+        <select id="categoryFilter" class="form-select">
+            <option value="all">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+
     <div id="map" style="width:100%; height:80vh; border-radius:12px; overflow:hidden;"></div>
 
 </div>

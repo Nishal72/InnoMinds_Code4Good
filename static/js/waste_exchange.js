@@ -1,4 +1,5 @@
 let map;
+let allMarkers = [];
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -9,6 +10,14 @@ function initMap() {
     businesses.forEach(business => {
         addMarker(business);
     });
+
+    // Hook category filter
+    const categorySelect = document.getElementById("categoryFilter");
+    if (categorySelect) {
+        categorySelect.addEventListener("change", function () {
+            filterMarkers(this.value);
+        });
+    }
 }
 
 function addMarker(business) {
@@ -16,28 +25,25 @@ function addMarker(business) {
         position: { lat: business.latitude, lng: business.longitude },
         map: map,
         title: business.name,
-        icon: createMarkerIcon(business.name)
+        icon: createMarkerIcon(business.name),
+        category: business.category // add category data to marker
     });
 
     marker.addListener("click", () => {
-    // Go to Django detail page for this business
-    if (business.detail_url) {
-        window.location.href = business.detail_url;
-    }
-});
+        if (business.detail_url) {
+            window.location.href = business.detail_url;
+        }
+    });
 
+    allMarkers.push(marker);
 }
 
-function openModal(business) {
-    document.getElementById("businessName").innerText = business.name;
-    document.getElementById("businessWaste").innerText = business.waste;
-    document.getElementById("businessPhone").innerText = business.phone;
-    document.getElementById("businessEmail").innerText = business.email;
-
-    if (business.image) {
-        document.getElementById("businessImage").src = business.image;
-    }
-
-    const modal = new bootstrap.Modal(document.getElementById("businessModal"));
-    modal.show();
+function filterMarkers(category) {
+    allMarkers.forEach(marker => {
+        if (category === "all" || marker.category === category) {
+            marker.setMap(map);// Show marker
+        } else {
+            marker.setMap(null);// Hide marker
+        }
+    });
 }

@@ -9,28 +9,34 @@ function initRegisterMap() {
         center: center,
     });
 
-    // On click, place or move marker and update form fields
     regMap.addListener("click", (e) => {
-        const clickedPos = e.latLng;
-
-        if (regMarker === null) {
-            regMarker = new google.maps.Marker({
-                position: clickedPos,
-                map: regMap,
-                draggable: true,
-            });
-
-            // Also allow dragging the marker to fine-tune
-            regMarker.addListener("dragend", () => {
-                const pos = regMarker.getPosition();
-                updateLatLngInputs(pos.lat(), pos.lng());
-            });
-        } else {
-            regMarker.setPosition(clickedPos);
-        }
-
-        updateLatLngInputs(clickedPos.lat(), clickedPos.lng());
+        placeMarker({
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng()
+        });
     });
+}
+
+function placeMarker(position) {
+    if (regMarker === null) {
+        regMarker = new google.maps.Marker({
+            position: position,
+            map: regMap,
+            draggable: true,
+        });
+
+        regMarker.addListener("dragend", () => {
+            const pos = regMarker.getPosition();
+            updateLatLngInputs(pos.lat(), pos.lng());
+        });
+    } else {
+        regMarker.setPosition(position);
+    }
+
+    updateLatLngInputs(position.lat, position.lng);
+
+    regMap.setCenter(position);
+    regMap.setZoom(15);
 }
 
 function updateLatLngInputs(lat, lng) {
@@ -41,4 +47,23 @@ function updateLatLngInputs(lat, lng) {
         latInput.value = lat.toFixed(6);
         lngInput.value = lng.toFixed(6);
     }
+}
+
+function useMyLocation() {
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            placeMarker({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            });
+        },
+        () => {
+            alert("Unable to retrieve your location.");
+        }
+    );
 }

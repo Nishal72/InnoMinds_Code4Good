@@ -9,5 +9,7 @@ def business_to_dict(business):
         "email": business.email,
         "latitude": business.latitude,
         "longitude": business.longitude,
+        "category": business.category.name if business.category else "Uncategorized",
         "detail_url": reverse("business_detail", args=[business.id]),
     }
+
