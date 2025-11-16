@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.core.mail import send_mail
+from django.contrib import messages
+import json
 
 from .models import Business, BusinessImage, Category
 from .utils import business_to_dict
 from .forms import BusinessForm
-import json
 
-from django.core.mail import send_mail
-from django.contrib import messages
+# Import AI email generator
+from .openai_utils import generate_quote_email
+
 
 def waste_exchange_view(request):
     businesses = Business.objects.all()
@@ -23,11 +26,11 @@ def waste_exchange_view(request):
 
 def register_business(request):
     if request.method == "POST":
-        form = BusinessForm(request.POST)
+        form = BusinessForm(request.POST, request.FILES)
         if form.is_valid():
             business = form.save()
 
-            # Handle multiple uploaded images
+            # Save multiple uploaded images
             for image_file in request.FILES.getlist('images'):
                 BusinessImage.objects.create(
                     business=business,
@@ -62,22 +65,25 @@ def request_quote(request, pk):
         user_email = request.POST.get("email")
         message_body = request.POST.get("message")
 
-        subject = f"Quotation Request from {user_name}"
-        message = (
-            f"You have received a new quotation request.\n\n"
-            f"Name: {user_name}\n"
-            f"Email: {user_email}\n\n"
-            f"Message:\n{message_body}"
+        # Generate the email content using OpenAI
+        ai_email_body = generate_quote_email(
+            user_name=user_name,
+            user_email=user_email,
+            message_body=message_body,
+            business=business
         )
 
+        subject = f"Quotation Request from {user_name}"
+
+        # Send the AI-generated email to the business
         send_mail(
             subject,
-            message,
-            user_email,               # from
-            [business.email],         # to business owner
+            ai_email_body,
+            user_email,            # Sender: User requesting quote
+            [business.email],      # Recipient: Business owner
         )
 
         messages.success(request, "Your quotation request has been sent successfully!")
-        return redirect("business_detail", pk=pk)
+        return redirect("business_detail", pk=business.pk)
 
-    return redirect("business_detail", pk=pk)
+    return redirect("business_detail", pk=business.pk)
