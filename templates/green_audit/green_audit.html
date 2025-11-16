@@ -12,18 +12,27 @@
 <link rel="stylesheet" href="{% static 'css/green_audit.css' %}">
 {% endblock %}
 
-<div class="audit-container">
-    <h1 class="text-center mb-5" style="color: #667eea; font-weight: bold;"> Green Audit</h1>
-    
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <h1>
+            <i class="fas fa-bolt"></i>
+            Green Energy Audit
+        </h1>
+        <p class="mb-0">Analyze your electricity bill and discover energy savings opportunities</p>
+    </div>
+</div>
+
+<div class="container audit-container">
     <!-- Information Cards -->
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card-info">
                 <div class="d-flex align-items-center">
-                    <div class="icon"></div>
+                    <div class="icon">📊</div>
                     <div>
                         <h5 class="mb-1">What is Green Audit?</h5>
-                        <p class="mb-0 small">Green audit is a process of assessing the environmental impact of an organization's activities.</p>
+                        <p class="mb-0 small">Analyze your Mauritius CEB electricity bill to identify savings opportunities and reduce your carbon footprint.</p>
                     </div>
                 </div>
             </div>
@@ -31,10 +40,10 @@
         <div class="col-md-4">
             <div class="card-info">
                 <div class="d-flex align-items-center">
-                    <div class="icon"></div>
+                    <div class="icon">💰</div>
                     <div>
-                        <h5 class="mb-1">Benefits of Green Audit</h5>
-                        <p class="mb-0 small">Identify areas where energy and resources can be saved, leading to cost savings and environmental benefits.</p>
+                        <h5 class="mb-1">Save Money</h5>
+                        <p class="mb-0 small">Mauritian households can save up to 30% on electricity bills through energy efficiency measures.</p>
                     </div>
                 </div>
             </div>
@@ -42,10 +51,10 @@
         <div class="col-md-4">
             <div class="card-info">
                 <div class="d-flex align-items-center">
-                    <div class="icon"></div>
+                    <div class="icon">☀️</div>
                     <div>
-                        <h5 class="mb-1">How to Conduct</h5>
-                        <p class="mb-0 small">Evaluate energy consumption, waste management, water usage, and other environmental factors.</p>
+                        <h5 class="mb-1">Solar Potential</h5>
+                        <p class="mb-0 small">Mauritius receives 5.5 hours of peak sunlight daily - perfect for solar energy generation.</p>
                     </div>
                 </div>
             </div>
@@ -54,15 +63,17 @@
     
     <!-- Upload Section -->
     <div class="input-section">
-        <h3 class="mb-4 text-center" style="color: #667eea;"> Upload Electricity Bill</h3>
-        <p class="text-center text-muted mb-4">Upload a photo of your Mauritius electricity bill for instant analysis</p>
+        <h3 class="mb-4 text-center" style="color: var(--primary-green);">
+            <i class="fas fa-upload"></i> Upload Electricity Bill
+        </h3>
+        <p class="text-center text-muted mb-4">Upload a photo of your Mauritius CEB electricity bill for instant analysis</p>
         
         <div id="alertContainer"></div>
         
         <!-- Image Upload Button -->
         <div class="file-input-wrapper">
             <button class="btn-gradient btn-capture" onclick="document.getElementById('imageInput').click()">
-                <span id="uploadBtnText"> Select/Capture Electricity Bill</span>
+                <span id="uploadBtnText"><i class="fas fa-camera"></i> Select/Capture Electricity Bill</span>
                 <div id="uploadSpinner" class="spinner" style="display: none; margin: 0 auto;"></div>
             </button>
             <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
@@ -71,51 +82,31 @@
         <p class="text-center mt-3 small text-muted">Supported formats: JPG, PNG, HEIC</p>
     </div>
     
-    <!-- Image Preview -->
-    <div id="imagePreviewContainer" style="display: none;">
-        <div class="input-section">
-            <h4 style="color: #667eea;"> Uploaded Bill</h4>
-            <img id="imagePreview" class="image-preview" alt="Electricity bill image">
-        </div>
-    </div>
-    
-    <!-- Results Section -->
-    <div id="resultsContainer"></div>
-    
-    <!-- Energy Tracker Section -->
-    <div id="energyTrackerContainer" style="display: none;">
-        <div class="input-section">
-            <h3 class="mb-4" style="color: #667eea;">⚡ Energy Tracker</h3>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="metric-card">
-                        <div class="metric-icon"></div>
-                        <div class="metric-value" id="kwh-value">0</div>
-                        <div class="metric-label">kWh Consumed</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="metric-card">
-                        <div class="metric-icon"></div>
-                        <div class="metric-value" id="cost-value">MUR 0</div>
-                        <div class="metric-label">Total Cost</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="metric-card">
-                        <div class="metric-icon"></div>
-                        <div class="metric-value" id="avg-value">0</div>
-                        <div class="metric-label">Avg Daily kWh</div>
-                    </div>
-                </div>
+    <!-- Image Preview and Analysis Results (side by side) -->
+    <div class="row" id="resultsRow" style="display: none;">
+        <!-- Left Column: Image Preview -->
+        <div class="col-md-6">
+            <div class="input-section">
+                <h4 style="color: var(--primary-green);">
+                    <i class="fas fa-file-invoice-dollar"></i> Uploaded Bill
+                </h4>
+                <img id="imagePreview" class="image-preview" alt="Electricity bill image">
             </div>
         </div>
+        
+        <!-- Right Column: Bill Data -->
+        <div class="col-md-6">
+            <div id="billDataContainer"></div>
+        </div>
     </div>
+    
+    <!-- Full Width Analysis Results -->
+    <div id="analysisContainer"></div>
     
     <!-- Audit History Section -->
     {% if recent_audits %}
     <div class="input-section">
-        <h3 class="mb-4" style="color: #667eea;">📋 Recent Audits</h3>
+        <h3 class="mb-4" style="color: var(--primary-green);">📋 Recent Audits</h3>
         <div class="audit-list">
             {% for audit in recent_audits %}
             <div class="audit-item">
@@ -163,11 +154,11 @@
         uploadBtnText.style.display = 'none';
         uploadSpinner.style.display = 'block';
         
-        // Display image preview
+        // Display image preview and show results row
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('imagePreview').src = e.target.result;
-            document.getElementById('imagePreviewContainer').style.display = 'block';
+            document.getElementById('resultsRow').style.display = 'flex';
         };
         reader.readAsDataURL(file);
         
@@ -215,7 +206,7 @@
                 
                 // Scroll to results
                 setTimeout(() => {
-                    document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('resultsRow').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 500);
             } else {
                 console.error('API Error:', data.message);
@@ -236,7 +227,7 @@
         }
         
         let html = '<div class="input-section bill-data-section">';
-        html += '<h4 style="color: #667eea; margin-bottom: 20px;">📄 Extracted Bill Information</h4>';
+        html += '<h4 style="color: var(--primary-green); margin-bottom: 20px;"><i class="fas fa-file-alt"></i> Extracted Bill Information</h4>';
         
         if (billData.bill_number) {
             html += `<div class="bill-data-row"><span class="bill-data-label">Bill Number:</span><span class="bill-data-value">${billData.bill_number}</span></div>`;
@@ -262,169 +253,28 @@
         
         html += '</div>';
         
-        const resultsContainer = document.getElementById('resultsContainer');
+        const billDataContainer = document.getElementById('billDataContainer');
         console.log('Inserting bill data HTML');
-        resultsContainer.innerHTML = html + resultsContainer.innerHTML;
+        billDataContainer.innerHTML = html;
     }
     
     function displayAnalysis(analysis) {
         console.log('displayAnalysis called with:', analysis);
-        const resultsContainer = document.getElementById('resultsContainer');
+        const analysisContainer = document.getElementById('analysisContainer');
         
-        // Create enhanced analysis display
+        // Create enhanced analysis display with just the content
         const analysisHtml = `
             <div class="result-card">
-                <div class="result-title">🌱 Comprehensive Green Audit Report</div>
-                <div class="info-card">
-                    <h4>📊 Your Energy Overview</h4>
-                    <p>This detailed report analyzes your electricity consumption and provides personalized recommendations for reducing costs and environmental impact in Mauritius.</p>
-                </div>
                 <div class="result-content">${analysis}</div>
             </div>
         `;
         console.log('Appending analysis HTML');
-        resultsContainer.innerHTML += analysisHtml;
+        analysisContainer.innerHTML = analysisHtml;
     }
     
     function updateEnergyTracker(billData) {
-        if (!billData.kwh_consumption) return;
-        
-        const kwh = parseFloat(billData.kwh_consumption);
-        const cost = parseFloat(billData.total_amount) || 0;
-        const avgDaily = (kwh / 30).toFixed(1);
-        
-        document.getElementById('kwh-value').textContent = kwh.toFixed(0);
-        document.getElementById('cost-value').textContent = 'MUR ' + cost.toFixed(2);
-        document.getElementById('avg-value').textContent = avgDaily;
-        
-        document.getElementById('energyTrackerContainer').style.display = 'block';
-        
-        // Create charts after a delay to ensure DOM is ready
-        setTimeout(() => {
-            createEnergyCharts(billData);
-        }, 500);
-    }
-    
-    function createEnergyCharts(billData) {
-        const kwh = parseFloat(billData.kwh_consumption) || 0;
-        const cost = parseFloat(billData.total_amount) || 0;
-        
-        // Add chart containers
-        const chartsHtml = `
-            <div class="input-section">
-                <h3 class="mb-4" style="color: #667eea;">📊 Energy Analytics</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="chart-container">
-                            <div class="chart-title">Monthly Consumption Breakdown</div>
-                            <canvas id="consumptionChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="chart-container">
-                            <div class="chart-title">Cost vs Potential Savings</div>
-                            <canvas id="savingsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-12">
-                        <div class="chart-container">
-                            <div class="chart-title">Solar Energy Production Estimate</div>
-                            <canvas id="solarChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.getElementById('energyTrackerContainer').insertAdjacentHTML('afterend', chartsHtml);
-        
-        // Calculate estimates
-        const avgMauritiusHousehold = 300; // kWh per month
-        const potentialSavings = cost * 0.25; // 25% savings potential
-        const solarProduction = kwh * 1.2; // Solar could produce 120% of consumption
-        
-        // Consumption Chart
-        new Chart(document.getElementById('consumptionChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Your Consumption', 'Average Household', 'Efficient Household'],
-                datasets: [{
-                    data: [kwh, avgMauritiusHousehold, avgMauritiusHousehold * 0.7],
-                    backgroundColor: ['#667eea', '#f5576c', '#38ef7d']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    title: { display: false }
-                }
-            }
-        });
-        
-        // Savings Chart
-        new Chart(document.getElementById('savingsChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Current Cost', 'After Efficiency', 'With Solar'],
-                datasets: [{
-                    label: 'MUR per Month',
-                    data: [cost, cost * 0.75, cost * 0.3],
-                    backgroundColor: ['#f5576c', '#ffd700', '#38ef7d']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
-            }
-        });
-        
-        // Solar Production Chart
-        new Chart(document.getElementById('solarChart'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: 'Your Consumption (kWh)',
-                        data: Array(12).fill(kwh),
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        fill: true
-                    },
-                    {
-                        label: 'Solar Production Potential (kWh)',
-                        data: [
-                            solarProduction * 0.9,
-                            solarProduction * 0.95,
-                            solarProduction * 1.0,
-                            solarProduction * 1.05,
-                            solarProduction * 1.0,
-                            solarProduction * 0.95,
-                            solarProduction * 0.9,
-                            solarProduction * 0.95,
-                            solarProduction * 1.0,
-                            solarProduction * 1.1,
-                            solarProduction * 1.05,
-                            solarProduction * 1.0
-                        ],
-                        borderColor: '#38ef7d',
-                        backgroundColor: 'rgba(56, 239, 125, 0.1)',
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' }
-                },
-                scales: { y: { beginAtZero: true } }
-            }
-        });
+        // Energy tracker and charts removed - analysis only
+        return;
     }
     
     function viewAuditDetails(auditId) {
