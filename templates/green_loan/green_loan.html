@@ -3,9 +3,9 @@
 
 {% block title %}Green Loan - MoLenerzi{% endblock %}
 
-<!-- {% block extra_css %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/green_loan.css' %}">
-{% endblock %} -->
+{% endblock %}
 
 {% block content %}
     <!-- Page Header -->
@@ -20,92 +20,104 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            <!-- Left Column: Information Cards -->
-            <div class="col-md-6">
+        <!-- Information Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
                 <div class="info-card">
                     <div class="icon">
                         <i class="fas fa-info-circle"></i>
                     </div>
-                    <h5>Welcome to Green Loan Advisor!</h5>
-                    <p>Green loans help fund eco-friendly projects, such as energy-efficient home improvements, renewable energy investments, and sustainable initiatives.</p>
+                    <h5>What is Green Loan?</h5>
+                    <p>Green loans help fund eco-friendly projects like solar panels, energy-efficient upgrades, and sustainable initiatives.</p>
                 </div>
-
+            </div>
+            <div class="col-md-3">
                 <div class="info-card">
                     <div class="icon">
                         <i class="fas fa-seedling"></i>
                     </div>
-                    <h5>Benefits of Green Loans</h5>
-                    <p>Green loans offer lower interest rates (4-8% annually) and longer repayment terms for eco-friendly projects, promoting sustainability while saving money.</p>
+                    <h5>Benefits</h5>
+                    <p>Lower interest rates (4-8% annually) and longer repayment terms for green projects.</p>
                 </div>
-
+            </div>
+            <div class="col-md-3">
                 <div class="info-card">
                     <div class="icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
-                    <h5>How to Apply for a Green Loan</h5>
-                    <p>Simply upload your payslip image below. Our AI will analyze your eligibility and recommend suitable green loan options from Mauritian banks.</p>
+                    <h5>How to Apply</h5>
+                    <p>Upload your payslip image below for instant AI analysis and loan recommendations.</p>
                 </div>
-
+            </div>
+            <div class="col-md-3">
                 <div class="info-card">
                     <div class="icon">
                         <i class="fas fa-lightbulb"></i>
                     </div>
-                    <h5>Tips for Getting Approved</h5>
-                    <p>Maintain a good credit score, provide accurate payslip details, and choose a project that meets the lender's criteria for green loans.</p>
+                    <h5>Approval Tips</h5>
+                    <p>Maintain good credit, provide accurate details, and choose projects meeting lender criteria.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Tracker -->
+        {% if user.is_authenticated %}
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="tracker-card">
+                    <h6>Total Applications</h6>
+                    <div class="value">{{ total_applications }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="tracker-card">
+                    <h6>Approved Loans</h6>
+                    <div class="value">{{ approved_count }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h3 class="mb-4 text-center" style="color: var(--dark-green);">
+                <i class="fas fa-upload"></i> Upload Your Payslip
+            </h3>
+            <p class="text-center text-muted mb-4">Upload a photo of your payslip for instant loan eligibility analysis</p>
+            
+            <div class="file-input-wrapper">
+                <button class="btn-gradient mb-3" id="captureBtn">
+                    <span id="uploadBtnText"><i class="fas fa-camera"></i> Select/Capture Payslip Image</span>
+                    <div id="uploadSpinner" class="spinner" style="display: none; margin: 0 auto;"></div>
+                </button>
+                <input type="file" id="payslipInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <p class="text-center mt-3 small text-muted">Supported formats: JPG, PNG, HEIC</p>
+            
+            <div id="loadingIndicator" style="display: none; text-align: center; margin-top: 1rem;">
+                <div class="spinner"></div>
+                <p style="color: var(--primary-green); margin-top: 0.5rem; font-weight: 600;">
+                    <i class="fas fa-cog fa-spin"></i> Processing your payslip...
+                </p>
+                <small style="color: #6b7280;">Extracting data and analyzing loan eligibility</small>
+            </div>
+        </div>
+
+        <!-- Image Preview and Analysis Results (side by side) -->
+        <div class="row" id="resultsRow" style="display: none;">
+            <!-- Left Column: Image Preview -->
+            <div class="col-md-6">
+                <div class="upload-section">
+                    <h4 style="color: var(--dark-green);">
+                        <i class="fas fa-file-invoice"></i> Uploaded Payslip
+                    </h4>
+                    <img id="previewImg" class="image-preview" alt="Payslip Preview">
                 </div>
             </div>
 
-            <!-- Right Column: Upload & Analysis -->
+            <!-- Right Column: Analysis Result -->
             <div class="col-md-6">
-                <!-- Loan Tracker -->
-                {% if user.is_authenticated %}
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <div class="tracker-card">
-                            <h6>Total Applications</h6>
-                            <div class="value">{{ total_applications }}</div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="tracker-card">
-                            <h6>Approved Loans</h6>
-                            <div class="value">{{ approved_count }}</div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Upload Section -->
-                <div class="upload-section">
-                    <h4 class="mb-4" style="color: var(--dark-green);">
-                        <i class="fas fa-upload"></i> Upload Your Payslip
-                    </h4>
-                    
-                    <input type="file" id="payslipInput" accept="image/*" style="display: none;">
-                    
-                    <button class="btn-gradient mb-3" id="captureBtn">
-                        <i class="fas fa-camera"></i> Capture Payslip Image
-                    </button>
-
-                    <div id="imagePreview" style="display: none;">
-                        <img id="previewImg" class="image-preview" alt="Payslip Preview">
-                    </div>
-
-                    <button class="btn-gradient" id="analyzeBtn" style="display: none;">
-                        <i class="fas fa-chart-line"></i> Analyze Payslip
-                    </button>
-
-                    <div id="loadingIndicator" style="display: none; text-align: center; margin-top: 1rem;">
-                        <div class="spinner"></div>
-                        <p style="color: var(--primary-green); margin-top: 0.5rem; font-weight: 600;">
-                            <i class="fas fa-cog fa-spin"></i> Processing your payslip...
-                        </p>
-                        <small style="color: #6b7280;">Extracting data and analyzing loan eligibility</small>
-                    </div>
-                </div>
-
-                <!-- Analysis Result -->
                 <div id="analysisResult" class="analysis-result">
                     <h4 style="color: var(--dark-green); margin-bottom: 1.5rem;">
                         <i class="fas fa-file-alt"></i> Loan Analysis Report
@@ -144,14 +156,18 @@
                         <p id="detailedAnalysisText"></p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Recent Applications -->
-                {% if user.is_authenticated and recent_loans %}
-                <div class="upload-section mt-4">
-                    <h4 style="color: var(--dark-green); margin-bottom: 1.5rem;">
-                        <i class="fas fa-history"></i> Recent Applications
-                    </h4>
-                    {% for loan in recent_loans %}
+        <!-- Recent Applications -->
+        {% if user.is_authenticated and recent_loans %}
+        <div class="upload-section mt-4">
+            <h4 style="color: var(--dark-green); margin-bottom: 1.5rem;">
+                <i class="fas fa-history"></i> Recent Applications
+            </h4>
+            <div class="row">
+            {% for loan in recent_loans %}
+                <div class="col-md-6 mb-3">
                     <div class="bank-card">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
@@ -178,14 +194,15 @@
                         <small style="color: #6b7280;">Max Loan Amount</small>
                         {% endif %}
                     </div>
-                    {% endfor %}
                 </div>
-                {% endif %}
+            {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/green_loan.js' %}"></script>
     
 {% endblock %}

@@ -365,14 +365,26 @@ Provide ALL calculations with actual numbers. Be precise and professional like a
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful energy efficiency expert specializing in Mauritius."},
+                {"role": "system", "content": "You are a helpful energy efficiency expert specializing in Mauritius. Return ONLY the HTML content without any markdown code fences or formatting."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=1500,
             temperature=0.7
         )
         
-        return response.choices[0].message.content.strip()
+        # Get the response and strip markdown code fences if present
+        analysis_html = response.choices[0].message.content.strip()
+        
+        # Remove markdown code fences (```html ... ```)
+        if analysis_html.startswith('```'):
+            # Find the first newline after opening fence
+            start_index = analysis_html.find('\n')
+            # Find the closing fence
+            end_index = analysis_html.rfind('```')
+            if start_index != -1 and end_index != -1 and end_index > start_index:
+                analysis_html = analysis_html[start_index + 1:end_index].strip()
+        
+        return analysis_html
         
     except Exception as e:
         print(f'Analysis error: {e}')

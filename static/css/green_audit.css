@@ -1,26 +1,65 @@
-.card-info {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+:root {
+    --primary-green: #10b981;
+    --secondary-green: #059669;
+    --dark-green: #047857;
+    --light-green: #d1fae5;
+    --accent-teal: #14b8a6;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    min-height: 100vh;
+}
+
+.page-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
     color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card-info {
+    background: white;
+    color: #374151;
     border: none;
     border-radius: 15px;
-    padding: 20px;
+    padding: 1.5rem;
     margin-bottom: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card-info:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 .card-info .icon {
     font-size: 2rem;
+    color: var(--primary-green);
     margin-right: 15px;
 }
 
+.card-info h5 {
+    color: var(--dark-green);
+    font-weight: bold;
+}
+
+.card-info p {
+    color: #6b7280;
+}
+
 .audit-container {
-    max-width: 1000px;
-    margin: 0 auto;
     padding: 20px;
 }
 
@@ -45,11 +84,11 @@
 
 .audit-textarea:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--primary-green);
 }
 
 .btn-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
     color: white;
     border: none;
     padding: 15px 40px;
@@ -58,14 +97,14 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
     width: 100%;
     margin-bottom: 15px;
 }
 
 .btn-gradient:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6);
 }
 
 .btn-gradient:disabled {
@@ -75,11 +114,11 @@
 }
 
 .btn-capture {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
 }
 
 .btn-capture:hover {
-    box-shadow: 0 8px 20px rgba(17, 153, 142, 0.6);
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.6);
 }
 
 .result-card {
@@ -103,11 +142,11 @@
 }
 
 .result-title {
-    color: #667eea;
+    color: var(--primary-green);
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 15px;
-    border-bottom: 3px solid #667eea;
+    border-bottom: 3px solid var(--primary-green);
     padding-bottom: 10px;
 }
 
@@ -120,7 +159,7 @@
 
 .spinner {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
+    border-top: 4px solid var(--primary-green);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -171,7 +210,7 @@
 }
 
 .metric-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
     color: white;
     padding: 25px;
     border-radius: 15px;
@@ -203,7 +242,7 @@
 
 .audit-item {
     background: #f8f9fa;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid var(--primary-green);
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 8px;
@@ -228,7 +267,7 @@
 }
 
 .audit-kwh {
-    color: #667eea;
+    color: var(--primary-green);
     font-size: 1.1rem;
 }
 
@@ -265,7 +304,7 @@
 }
 
 .bill-data-value {
-    color: #667eea;
+    color: var(--primary-green);
     font-weight: bold;
 }
 
@@ -275,11 +314,11 @@
     padding: 25px;
     margin-bottom: 20px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    border-left: 5px solid #667eea;
+    border-left: 5px solid var(--primary-green);
 }
 
 .analysis-section h3 {
-    color: #667eea;
+    color: var(--primary-green);
     font-size: 1.5rem;
     margin-bottom: 15px;
     font-weight: bold;
@@ -322,7 +361,7 @@
     content: counter(item);
     position: absolute;
     left: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
     color: white;
     width: 28px;
     height: 28px;
@@ -375,7 +414,7 @@
 }
 
 .chart-title {
-    color: #667eea;
+    color: var(--primary-green);
     font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 20px;
@@ -394,7 +433,7 @@
 }
 
 .info-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
     color: white;
     padding: 20px;
     border-radius: 15px;
